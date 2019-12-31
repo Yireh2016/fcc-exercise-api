@@ -1,0 +1,244 @@
+{
+  "{\"filename\":\"/app/controllers.js\",\"env\":{},\"retainLines\":false,\"highlightCode\":true,\"suppressDeprecationMessages\":false,\"presets\":[],\"plugins\":[[[],null]],\"ignore\":[],\"code\":true,\"metadata\":true,\"ast\":true,\"comments\":true,\"compact\":\"auto\",\"minified\":false,\"sourceRoot\":\"/app\",\"babelrc\":true,\"sourceType\":\"module\",\"moduleIds\":false,\"passPerPreset\":false,\"parserOpts\":false,\"generatorOpts\":false}:6.26.3": {
+    "metadata": {
+      "usedHelpers": [
+        "asyncToGenerator"
+      ],
+      "marked": [],
+      "modules": {
+        "imports": [],
+        "exports": {
+          "exported": [],
+          "specifiers": []
+        }
+      }
+    },
+    "options": {
+      "filename": "/app/controllers.js",
+      "filenameRelative": "/app/controllers.js",
+      "env": {},
+      "retainLines": false,
+      "highlightCode": true,
+      "suppressDeprecationMessages": false,
+      "presets": [],
+      "plugins": [
+        [
+          [],
+          null
+        ]
+      ],
+      "ignore": [],
+      "code": true,
+      "metadata": true,
+      "ast": false,
+      "comments": true,
+      "compact": "auto",
+      "minified": false,
+      "sourceMaps": "both",
+      "sourceMapTarget": "controllers.js",
+      "sourceFileName": "controllers.js",
+      "sourceRoot": "/app",
+      "babelrc": false,
+      "sourceType": "module",
+      "moduleRoot": "/app",
+      "moduleIds": false,
+      "passPerPreset": false,
+      "parserOpts": false,
+      "generatorOpts": false,
+      "basename": "controllers"
+    },
+    "ignored": false,
+    "code": "function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step(\"next\", value); }, function (err) { step(\"throw\", err); }); } } return step(\"next\"); }); }; }\n\nlet { addUser, findUser, addExercise, getExercise } = require(\"./db.js\");\n\nconst formatUserArr = arr => {\n  const result = [];\n  arr.forEach(user => {\n    const { username, _id } = user;\n    result.push({ username, _id });\n  });\n  return result;\n};\n\nconst createUser = (req, res) => {\n  // post to api/exercise/new-user\n  const { username } = req.body;\n\n  const _addUser = (() => {\n    var _ref = _asyncToGenerator(function* () {\n      try {\n        const addUserRes = yield addUser({ username });\n        res.json(addUserRes);\n      } catch (err) {\n        res.json(err);\n      }\n    });\n\n    return function _addUser() {\n      return _ref.apply(this, arguments);\n    };\n  })();\n\n  _addUser({ username });\n};\n\nconst getAllUsers = (req, res) => {\n  //get api/exercise/users\n  const _findUser = (() => {\n    var _ref2 = _asyncToGenerator(function* () {\n      try {\n        const findUSerRes = yield findUser({});\n        console.log(\"found user(s)\", findUSerRes);\n        res.json(formatUserArr(findUSerRes));\n      } catch (err) {\n        res.json(err);\n      }\n    });\n\n    return function _findUser() {\n      return _ref2.apply(this, arguments);\n    };\n  })();\n\n  _findUser();\n};\n\nconst addNewExercise = (req, res) => {\n  // post /api/exercise/add\n  // userId(_id), description, duration, and optionally date\n  let { userId, description, duration, date } = req.body;\n\n  if (!date) {\n    date = new Date();\n  } else {\n    date = new Date(date);\n  }\n  const _addExercise = (() => {\n    var _ref3 = _asyncToGenerator(function* () {\n      try {\n\n        const findUserRes = yield findUser({ _id: userId });\n\n        if (findUserRes.length === 0) {\n          res.json({ error: 'incorrect user id' });\n          return;\n        }\n\n        const exerciseRes = yield addExercise({ userId, description, duration, date });\n        const { username } = findUserRes[0];\n        let { _id } = exerciseRes;\n        res.json({ username, _id, description, duration, date: date.toString().match(/^[a-z]{3}\\s[a-z]{3}\\s\\d{2}\\s\\d{4}/i)[0] });\n      } catch (err) {\n        console.log('error adding exercise', err);\n        res.json(err);\n      }\n    });\n\n    return function _addExercise() {\n      return _ref3.apply(this, arguments);\n    };\n  })();\n  _addExercise();\n};\n\nconst getExerciseLog = (req, res) => {\n  const { userId, from, to, limit } = req.query;\n\n  const _getExercise = (() => {\n    var _ref4 = _asyncToGenerator(function* (exercise) {\n      try {\n        const getExerciseRes = yield getExercise(exercise);\n\n        console.log(\"getted exercises\", getExerciseRes);\n        const findUserRes = yield findUser({ _id: userId });\n        const username = findUserRes[0].username;\n\n        res.json({ username, userId, log: getExerciseRes });\n      } catch (err) {\n        console.log(\"error getting exercises\", err);\n        res.json(err);\n      }\n    });\n\n    return function _getExercise(_x) {\n      return _ref4.apply(this, arguments);\n    };\n  })();\n  _getExercise({ userId, from, to, limit });\n};\n\nmodule.exports = { createUser, getAllUsers, addNewExercise, getExerciseLog };\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImNvbnRyb2xsZXJzLmpzIl0sIm5hbWVzIjpbImFkZFVzZXIiLCJmaW5kVXNlciIsImFkZEV4ZXJjaXNlIiwiZ2V0RXhlcmNpc2UiLCJyZXF1aXJlIiwiZm9ybWF0VXNlckFyciIsImFyciIsInJlc3VsdCIsImZvckVhY2giLCJ1c2VyIiwidXNlcm5hbWUiLCJfaWQiLCJwdXNoIiwiY3JlYXRlVXNlciIsInJlcSIsInJlcyIsImJvZHkiLCJfYWRkVXNlciIsImFkZFVzZXJSZXMiLCJqc29uIiwiZXJyIiwiZ2V0QWxsVXNlcnMiLCJfZmluZFVzZXIiLCJmaW5kVVNlclJlcyIsImNvbnNvbGUiLCJsb2ciLCJhZGROZXdFeGVyY2lzZSIsInVzZXJJZCIsImRlc2NyaXB0aW9uIiwiZHVyYXRpb24iLCJkYXRlIiwiRGF0ZSIsIl9hZGRFeGVyY2lzZSIsImZpbmRVc2VyUmVzIiwibGVuZ3RoIiwiZXJyb3IiLCJleGVyY2lzZVJlcyIsInRvU3RyaW5nIiwibWF0Y2giLCJnZXRFeGVyY2lzZUxvZyIsImZyb20iLCJ0byIsImxpbWl0IiwicXVlcnkiLCJfZ2V0RXhlcmNpc2UiLCJleGVyY2lzZSIsImdldEV4ZXJjaXNlUmVzIiwibW9kdWxlIiwiZXhwb3J0cyJdLCJtYXBwaW5ncyI6Ijs7QUFBQSxJQUFJLEVBQUVBLE9BQUYsRUFBWUMsUUFBWixFQUFzQkMsV0FBdEIsRUFBb0NDLFdBQXBDLEtBQW9EQyxRQUFRLFNBQVIsQ0FBeEQ7O0FBRUEsTUFBTUMsZ0JBQWdCQyxHQUFELElBQU87QUFDdEIsUUFBTUMsU0FBUyxFQUFmO0FBQ0FELE1BQUlFLE9BQUosQ0FBYUMsUUFBTztBQUNsQixVQUFNLEVBQUVDLFFBQUYsRUFBYUMsR0FBYixLQUFxQkYsSUFBM0I7QUFDQUYsV0FBT0ssSUFBUCxDQUFZLEVBQUVGLFFBQUYsRUFBYUMsR0FBYixFQUFaO0FBQ0QsR0FIRDtBQUlBLFNBQU9KLE1BQVA7QUFDRCxDQVBMOztBQVNBLE1BQU1NLGFBQWEsQ0FBQ0MsR0FBRCxFQUFLQyxH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QkFBWixFQUFnQ3FCLGNBQWhDO0FBQ0EsY0FBTWIsY0FBYyxNQUFNaEMsU0FBUyxFQUFDVSxLQUFJZ0IsTUFBTCxFQUFULENBQTFCO0FBQ0EsY0FBTWpCLFdBQVd1QixZQUFZLENBQVosRUFBZXZCLFFBQWhDOztBQUVBSyxZQUFJSSxJQUFKLENBQVMsRUFBQ1QsUUFBRCxFQUFXaUIsTUFBWCxFQUFtQkYsS0FBSXFCLGNBQXZCLEVBQVQ7QUFDRCxPQVJELENBUUMsT0FBTTFCLEdBQU4sRUFBVTtBQUNUSSxnQkFBUUMsR0FBUixDQUFZLHlCQUFaLEVBQXVDTCxHQUF2QztBQUNBTCxZQUFJSSxJQUFKLENBQVNDLEdBQVQ7QUFDRDtBQUNGLEtBYks7O0FBQUE7QUFBQTtBQUFBO0FBQUEsTUFBTjtBQWNBd0IsZUFBYSxFQUFFakIsTUFBRixFQUFVYSxJQUFWLEVBQWlCQyxFQUFqQixFQUFzQkMsS0FBdEIsRUFBYjtBQUNELENBbEJEOztBQW9CQUssT0FBT0MsT0FBUCxHQUFpQixFQUFFbkMsVUFBRixFQUFlUSxXQUFmLEVBQTZCSyxjQUE3QixFQUE4Q2EsY0FBOUMsRUFBakIiLCJmaWxlIjoiY29udHJvbGxlcnMuanMiLCJzb3VyY2VSb290IjoiL2FwcCIsInNvdXJjZXNDb250ZW50IjpbImxldCB7IGFkZFVzZXIgLCBmaW5kVXNlciwgYWRkRXhlcmNpc2UgLCBnZXRFeGVyY2lzZSB9ID0gcmVxdWlyZShcIi4vZGIuanNcIilcblxuY29uc3QgZm9ybWF0VXNlckFyciA9KGFycik9PntcbiAgICAgIGNvbnN0IHJlc3VsdCA9IFtdO1xuICAgICAgYXJyLmZvckVhY2goIHVzZXIgPT57XG4gICAgICAgIGNvbnN0IHsgdXNlcm5hbWUgLCBfaWQgfSA9IHVzZXJcbiAgICAgICAgcmVzdWx0LnB1c2goeyB1c2VybmFtZSAsIF9pZCB9KVxuICAgICAgfSlcbiAgICAgIHJldHVybiByZXN1bHRcbiAgICB9XG5cbmNvbnN0IGNyZWF0ZVVzZXIgPSAocmVxLHJlcykgPT57XG4gIC8vIHBvc3QgdG8gYXBpL2V4ZXJjaXNlL25ldy11c2VyXG4gIGNvbnN0IHsgdXNlcm5hbWUgfSA9IHJlcS5ib2R5O1xuICBcbiBjb25zdCBfYWRkVXNlcj1hc3luYygpID0+IHsgXG4gICB0cnl7XG4gICAgY29uc3QgYWRkVXNlclJlcyA9IGF3YWl0IGFkZFVzZXIoe3VzZXJuYW1lfSk7XG4gICAgIHJlcy5qc29uKGFkZFVzZXJSZXMpXG4gIH1jYXRjaChlcnIpe1xuICAgIHJlcy5qc29uKGVycilcbiAgfVxuIH1cbiBcbiAgX2FkZFVzZXIoe3VzZXJuYW1lfSlcbn1cblxuY29uc3QgZ2V0QWxsVXNlcnMgPSAocmVxLHJlcykgPT57XG4gIC8vZ2V0IGFwaS9leGVyY2lzZS91c2Vyc1xuICBjb25zdCBfZmluZFVzZXI9IGFzeW5jKCk9PntcbiAgIHRyeXtcbiAgICBjb25zdCBmaW5kVVNlclJlcyA9IGF3YWl0IGZpbmRVc2VyKHt9KVxuICAgIGNvbnNvbGUubG9nKFwiZm91bmQgdXNlcihzKVwiLCBmaW5kVVNlclJlcylcbiAgICByZXMuanNvbihmb3JtYXRVc2VyQXJyKGZpbmRVU2VyUmVzKSlcbiAgIH0gY2F0Y2goZXJyKXtcbiAgICAgcmVzLmpzb24oZXJyKVxuICAgfVxuICB9XG4gIFxuICBfZmluZFVzZXIoKTtcbn1cblxuY29uc3QgYWRkTmV3RXhlcmNpc2UgPSAocmVxLHJlcykgPT57XG4gIC8vIHBvc3QgL2FwaS9leGVyY2lzZS9hZGRcbiAgLy8gdXNlcklkKF9pZCksIGRlc2NyaXB0aW9uLCBkdXJhdGlvbiwgYW5kIG9wdGlvbmFsbHkgZGF0ZVxuICBsZXQgeyB1c2VySWQsIGRlc2NyaXB0aW9uLCBkdXJhdGlvbiwgZGF0ZSB9ID0gcmVxLmJvZHk7XG4gIFxuICBpZighZGF0ZSl7XG4gICAgZGF0ZSA9IG5ldyBEYXRlKClcbiAgfWVsc2V7XG4gICAgZGF0ZT1uZXcgRGF0ZShkYXRlKVxuICB9XG4gIGNvbnN0IF9hZGRFeGVyY2lzZSA9IGFzeW5jKCk9PntcbiAgICB0cnl7XG4gICAgICBcbiAgICAgIGNvbnN0IGZpbmRVc2VyUmVzID0gYXdhaXQgZmluZFVzZXIoe19pZDp1c2VySWR9KVxuICAgICAgXG4gICAgICBpZihmaW5kVXNlclJlcy5sZW5ndGggPT09IDApe1xuICAgICAgICByZXMuanNvbih7ZXJyb3I6ICdpbmNvcnJlY3QgdXNlciBpZCd9KVxuICAgICAgICByZXR1cm5cbiAgICAgIH1cbiAgICAgIFxuICAgICAgY29uc3QgZXhlcmNpc2VSZXMgPSBhd2FpdCBhZGRFeGVyY2lzZSh7IHVzZXJJZCwgZGVzY3JpcHRpb24sIGR1cmF0aW9uLCBkYXRlIH0pO1xuICAgICAgY29uc3QgeyB1c2VybmFtZSB9ID0gZmluZFVzZXJSZXNbMF07XG4gICAgICBsZXQgIHsgX2lkIH0gPSBleGVyY2lzZVJlczsgXG4gICAgICByZXMuanNvbih7IHVzZXJuYW1lLCBfaWQsIGRlc2NyaXB0aW9uLCBkdXJhdGlvbiAsIGRhdGU6ZGF0ZS50b1N0cmluZygpLm1hdGNoKC9eW2Etel17M31cXHNbYS16XXszfVxcc1xcZHsyfVxcc1xcZHs0fS9pKVswXSAgIH0pXG4gICAgfWNhdGNoKGVycil7XG4gICAgICBjb25zb2xlLmxvZygnZXJyb3IgYWRkaW5nIGV4ZXJjaXNlJyxlcnIpXG4gICAgICByZXMuanNvbihlcnIpXG4gICAgfVxuICB9XG4gIF9hZGRFeGVyY2lzZSgpXG59XG5cbmNvbnN0IGdldEV4ZXJjaXNlTG9nID0ocmVxLHJlcykgPT57XG4gIGNvbnN0IHsgdXNlcklkLCBmcm9tICwgdG8gLCBsaW1pdCB9ID0gcmVxLnF1ZXJ5XG4gIFxuICBjb25zdCBfZ2V0RXhlcmNpc2U9YXN5bmMoZXhlcmNpc2UpPT57XG4gICAgdHJ5e1xuICAgICAgY29uc3QgZ2V0RXhlcmNpc2VSZXMgPSBhd2FpdCBnZXRFeGVyY2lzZShleGVyY2lzZSlcbiAgICAgIFxuICAgICAgY29uc29sZS5sb2coXCJnZXR0ZWQgZXhlcmNpc2VzXCIsIGdldEV4ZXJjaXNlUmVzKVxuICAgICAgY29uc3QgZmluZFVzZXJSZXMgPSBhd2FpdCBmaW5kVXNlcih7X2lkOnVzZXJJZH0pXG4gICAgICBjb25zdCB1c2VybmFtZSA9IGZpbmRVc2VyUmVzWzBdLnVzZXJuYW1lXG4gICAgICBcbiAgICAgIHJlcy5qc29uKHt1c2VybmFtZSwgdXNlcklkLCBsb2c6Z2V0RXhlcmNpc2VSZXN9KVxuICAgIH1jYXRjaChlcnIpe1xuICAgICAgY29uc29sZS5sb2coXCJlcnJvciBnZXR0aW5nIGV4ZXJjaXNlc1wiLCBlcnIpXG4gICAgICByZXMuanNvbihlcnIpXG4gICAgfVxuICB9XG4gIF9nZXRFeGVyY2lzZSh7IHVzZXJJZCwgZnJvbSAsIHRvICwgbGltaXQgfSlcbn1cblxubW9kdWxlLmV4cG9ydHMgPSB7IGNyZWF0ZVVzZXIgLCBnZXRBbGxVc2VycyAsIGFkZE5ld0V4ZXJjaXNlICwgZ2V0RXhlcmNpc2VMb2cgfSJdfQ==",
+    "ast": null,
+    "map": {
+      "version": 3,
+      "sources": [
+        "controllers.js"
+      ],
+      "names": [
+        "addUser",
+        "findUser",
+        "addExercise",
+        "getExercise",
+        "require",
+        "formatUserArr",
+        "arr",
+        "result",
+        "forEach",
+        "user",
+        "username",
+        "_id",
+        "push",
+        "createUser",
+        "req",
+        "res",
+        "body",
+        "_addUser",
+        "addUserRes",
+        "json",
+        "err",
+        "getAllUsers",
+        "_findUser",
+        "findUSerRes",
+        "console",
+        "log",
+        "addNewExercise",
+        "userId",
+        "description",
+        "duration",
+        "date",
+        "Date",
+        "_addExercise",
+        "findUserRes",
+        "length",
+        "error",
+        "exerciseRes",
+        "toString",
+        "match",
+        "getExerciseLog",
+        "from",
+        "to",
+        "limit",
+        "query",
+        "_getExercise",
+        "exercise",
+        "getExerciseRes",
+        "module",
+        "exports"
+      ],
+      "mappings": "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",
+      "file": "controllers.js",
+      "sourceRoot": "/app",
+      "sourcesContent": [
+        "let { addUser , findUser, addExercise , getExercise } = require(\"./db.js\")\n\nconst formatUserArr =(arr)=>{\n      const result = [];\n      arr.forEach( user =>{\n        const { username , _id } = user\n        result.push({ username , _id })\n      })\n      return result\n    }\n\nconst createUser = (req,res) =>{\n  // post to api/exercise/new-user\n  const { username } = req.body;\n  \n const _addUser=async() => { \n   try{\n    const addUserRes = await addUser({username});\n     res.json(addUserRes)\n  }catch(err){\n    res.json(err)\n  }\n }\n \n  _addUser({username})\n}\n\nconst getAllUsers = (req,res) =>{\n  //get api/exercise/users\n  const _findUser= async()=>{\n   try{\n    const findUSerRes = await findUser({})\n    console.log(\"found user(s)\", findUSerRes)\n    res.json(formatUserArr(findUSerRes))\n   } catch(err){\n     res.json(err)\n   }\n  }\n  \n  _findUser();\n}\n\nconst addNewExercise = (req,res) =>{\n  // post /api/exercise/add\n  // userId(_id), description, duration, and optionally date\n  let { userId, description, duration, date } = req.body;\n  \n  if(!date){\n    date = new Date()\n  }else{\n    date=new Date(date)\n  }\n  const _addExercise = async()=>{\n    try{\n      \n      const findUserRes = await findUser({_id:userId})\n      \n      if(findUserRes.length === 0){\n        res.json({error: 'incorrect user id'})\n        return\n      }\n      \n      const exerciseRes = await addExercise({ userId, description, duration, date });\n      const { username } = findUserRes[0];\n      let  { _id } = exerciseRes; \n      res.json({ username, _id, description, duration , date:date.toString().match(/^[a-z]{3}\\s[a-z]{3}\\s\\d{2}\\s\\d{4}/i)[0]   })\n    }catch(err){\n      console.log('error adding exercise',err)\n      res.json(err)\n    }\n  }\n  _addExercise()\n}\n\nconst getExerciseLog =(req,res) =>{\n  const { userId, from , to , limit } = req.query\n  \n  const _getExercise=async(exercise)=>{\n    try{\n      const getExerciseRes = await getExercise(exercise)\n      \n      console.log(\"getted exercises\", getExerciseRes)\n      const findUserRes = await findUser({_id:userId})\n      const username = findUserRes[0].username\n      \n      res.json({username, userId, log:getExerciseRes})\n    }catch(err){\n      console.log(\"error getting exercises\", err)\n      res.json(err)\n    }\n  }\n  _getExercise({ userId, from , to , limit })\n}\n\nmodule.exports = { createUser , getAllUsers , addNewExercise , getExerciseLog }"
+      ]
+    },
+    "mtime": 1577810012000
+  },
+  "{\"filename\":\"/app/db.js\",\"env\":{},\"retainLines\":false,\"highlightCode\":true,\"suppressDeprecationMessages\":false,\"presets\":[],\"plugins\":[[[],null]],\"ignore\":[],\"code\":true,\"metadata\":true,\"ast\":true,\"comments\":true,\"compact\":\"auto\",\"minified\":false,\"sourceRoot\":\"/app\",\"babelrc\":true,\"sourceType\":\"module\",\"moduleIds\":false,\"passPerPreset\":false,\"parserOpts\":false,\"generatorOpts\":false}:6.26.3": {
+    "metadata": {
+      "usedHelpers": [],
+      "marked": [],
+      "modules": {
+        "imports": [],
+        "exports": {
+          "exported": [],
+          "specifiers": []
+        }
+      }
+    },
+    "options": {
+      "filename": "/app/db.js",
+      "filenameRelative": "/app/db.js",
+      "env": {},
+      "retainLines": false,
+      "highlightCode": true,
+      "suppressDeprecationMessages": false,
+      "presets": [],
+      "plugins": [
+        [
+          [],
+          null
+        ]
+      ],
+      "ignore": [],
+      "code": true,
+      "metadata": true,
+      "ast": false,
+      "comments": true,
+      "compact": "auto",
+      "minified": false,
+      "sourceMaps": "both",
+      "sourceMapTarget": "db.js",
+      "sourceFileName": "db.js",
+      "sourceRoot": "/app",
+      "babelrc": false,
+      "sourceType": "module",
+      "moduleRoot": "/app",
+      "moduleIds": false,
+      "passPerPreset": false,
+      "parserOpts": false,
+      "generatorOpts": false,
+      "basename": "db"
+    },
+    "ignored": false,
+    "code": "const mongoose = require('mongoose');\nconst shortid = require('shortid');\n\nmongoose.connect(`mongodb+srv://fcc-mongo-jainer:${process.env.DBPASSWD}@cluster0-8ebwi.mongodb.net/test?retryWrites=true&w=majority`, { useNewUrlParser: true, useUnifiedTopology: true });\n\nconst Schema = mongoose.Schema;\n\nconst userSchema = new Schema({\n  _id: {\n    type: String,\n    default: shortid.generate\n  },\n  username: { type: String, unique: true }\n});\n\nconst exerciseSchema = new Schema({\n  // userId(_id), description, duration, and optionally date\n  _id: {\n    type: String,\n    default: shortid.generate\n  },\n  userId: { type: String, required: true },\n  description: { type: String, required: true },\n  duration: { type: String, required: true },\n  date: { type: Date }\n});\n\nconst UserModel = mongoose.model('User', userSchema);\nconst ExerciseModel = mongoose.model(\"Exercise\", exerciseSchema);\n\nconst addUser = user => new Promise((resolve, reject) => {\n\n  let newUser = new UserModel(user);\n\n  console.log(\"saving user\", newUser);\n\n  newUser.save((err, user) => {\n\n    if (err) reject(err);\n\n    console.log('saved user', user);\n    const { _id, username } = user;\n    resolve({ _id, username });\n  });\n});\nconst findUser = queryObj => new Promise((resolve, reject) => {\n  UserModel.find(queryObj).exec((err, usernameArr) => {\n\n    if (err) reject(err);\n\n    resolve(usernameArr);\n  });\n});\nconst addExercise = exercise => new Promise((resolve, reject) => {\n  // userId(_id), description, duration, and optionally date\n  console.log(\"exercise creating\", exercise);\n  let newExercise = new ExerciseModel(exercise);\n  console.log(\"exercise saving\", newExercise);\n  newExercise.save((err, result) => {\n    if (err) reject(err);\n    console.log(\"exercise saved\", result);\n    resolve(result);\n  });\n});\nconst getExercise = ({ userId, from, to, limit }) => new Promise((resolve, reject) => {\n\n  const getHandler = (err, exerciseArr) => {\n    if (err) reject(err);\n    console.log(\"getted exercises\", exerciseArr);\n    resolve(exerciseArr);\n  };\n  const _from = from ? from : new Date(\"1970-01-01\");\n  const _to = to ? to : new Date(\"2100-01-01\");\n  const _limit = limit ? limit : 0;\n  ExerciseModel.find({ userId }).where('date').gte(_from).lte(_to).limit(_limit).exec(getHandler);\n});\n\nmodule.exports = { addUser, findUser, addExercise, getExercise };\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImRiLmpzIl0sIm5hbWVzIjpbIm1vbmdvb3NlIiwicmVxdWlyZSIsInNob3J0aWQiLCJjb25uZWN0IiwicHJvY2VzcyIsImVudiIsIkRCUEFTU1dEIiwidXNlTmV3VXJsUGFyc2VyIiwidXNlVW5pZmllZFRvcG9sb2d5IiwiU2NoZW1hIiwidXNlclNjaGVtYSIsIl9pZCIsInR5cGUiLCJTdHJpbmciLCJkZWZhdWx0IiwiZ2VuZXJhdGUiLCJ1c2VybmFtZSIsInVuaXF1ZSIsImV4ZXJjaXNlU2NoZW1hIiwidXNlcklkIiwicmVxdWlyZWQiLCJkZXNjcmlwdGlvbiIsImR1cmF0aW9uIiwiZGF0ZSIsIkRhdGUiLCJVc2VyTW9kZWwiLCJtb2RlbCIsIkV4ZXJjaXNlTW9kZWwiLCJhZGRVc2VyIiwidXNlciIsIlByb21pc2UiLCJyZXNvbHZlIiwicmVqZWN0IiwibmV3VXNlciIsImNvbnNvbGUiLCJsb2ciLCJzYXZlIiwiZXJyIiwiZmluZFVzZXIiLCJxdWVyeU9iaiIsImZpbmQiLCJleGVjIiwidXNlcm5hbWVBcnIiLCJhZGRFeGVyY2lzZSIsImV4ZXJjaXNlIiwibmV3RXhlcmNpc2UiLCJyZXN1bHQiLCJnZXRFeGVyY2lzZSIsImZyb20iLCJ0byIsImxpbWl0IiwiZ2V0SGFuZGxlciIsImV4ZXJjaXNlQXJyIiwiX2Zyb20iLCJfdG8iLCJfbGltaXQiLCJ3aGVyZSIsImd0ZSIsImx0ZSIsIm1vZHVsZSIsImV4cG9ydHMiXSwibWFwcGluZ3MiOiJBQUFBLE1BQU1BLFdBQVlDLFFBQVEsVUFBUixDQUFsQjtBQUNBLE1BQU1DLFVBQVVELFFBQVEsU0FBUixDQUFoQjs7QUFFQUQsU0FBU0csT0FBVCxDQUFrQixrQ0FBaUNDLFFBQVFDLEdBQVIsQ0FBWUMsUUFBUyw4REFBeEUsRUFBc0ksRUFBRUMsaUJBQWlCLElBQW5CLEVBQXlCQyxvQkFBb0IsSUFBN0MsRUFBdEk7O0FBRUEsTUFBTUMsU0FBU1QsU0FBU1MsTUFBeEI7O0FBRUEsTUFBTUMsYUFBYSxJQUFJRCxNQUFK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QS9CO0FBQ0FyQixZQUFRcUIsV0FBUjtBQUdELEdBTkQ7QUFPQSxRQUFNQyxRQUFNTCxPQUFLQSxJQUFMLEdBQVUsSUFBSXhCLElBQUosQ0FBUyxZQUFULENBQXRCO0FBQ0EsUUFBTThCLE1BQUlMLEtBQUdBLEVBQUgsR0FBTSxJQUFJekIsSUFBSixDQUFTLFlBQVQsQ0FBaEI7QUFDQSxRQUFNK0IsU0FBT0wsUUFBTUEsS0FBTixHQUFZLENBQXpCO0FBQ0F2QixnQkFBY2EsSUFBZCxDQUFtQixFQUFDckIsTUFBRCxFQUFuQixFQUE2QnFDLEtBQTdCLENBQW1DLE1BQW5DLEVBQTJDQyxHQUEzQyxDQUErQ0osS0FBL0MsRUFBc0RLLEdBQXRELENBQTBESixHQUExRCxFQUErREosS0FBL0QsQ0FBcUVLLE1BQXJFLEVBQTZFZCxJQUE3RSxDQUFrRlUsVUFBbEY7QUFDRCxDQWIyQyxDQUE1Qzs7QUFlQVEsT0FBT0MsT0FBUCxHQUFpQixFQUFFaEMsT0FBRixFQUFXVSxRQUFYLEVBQXNCSyxXQUF0QixFQUFvQ0ksV0FBcEMsRUFBakIiLCJmaWxlIjoiZGIuanMiLCJzb3VyY2VSb290IjoiL2FwcCIsInNvdXJjZXNDb250ZW50IjpbImNvbnN0IG1vbmdvb3NlID0gIHJlcXVpcmUoJ21vbmdvb3NlJyk7XG5jb25zdCBzaG9ydGlkID0gcmVxdWlyZSgnc2hvcnRpZCcpXG5cbm1vbmdvb3NlLmNvbm5lY3QoYG1vbmdvZGIrc3J2Oi8vZmNjLW1vbmdvLWphaW5lcjoke3Byb2Nlc3MuZW52LkRCUEFTU1dEfUBjbHVzdGVyMC04ZWJ3aS5tb25nb2RiLm5ldC90ZXN0P3JldHJ5V3JpdGVzPXRydWUmdz1tYWpvcml0eWAseyB1c2VOZXdVcmxQYXJzZXI6IHRydWUsIHVzZVVuaWZpZWRUb3BvbG9neTogdHJ1ZSB9KVxuXG5jb25zdCBTY2hlbWEgPSBtb25nb29zZS5TY2hlbWE7XG5cbmNvbnN0IHVzZXJTY2hlbWEgPSBuZXcgU2NoZW1hKHtcbiAgX2lkOiB7XG4gIHR5cGU6IFN0cmluZyxcbiAgZGVmYXVsdDogc2hvcnRpZC5nZW5lcmF0ZVxufSxcbiAgdXNlcm5hbWU6eyB0eXBlOiBTdHJpbmcsIHVuaXF1ZTogdHJ1ZSB9LFxufSlcblxuY29uc3QgZXhlcmNpc2VTY2hlbWE9IG5ldyBTY2hlbWEoe1xuICAvLyB1c2VySWQoX2lkKSwgZGVzY3JpcHRpb24sIGR1cmF0aW9uLCBhbmQgb3B0aW9uYWxseSBkYXRlXG4gIF9pZDoge1xuICAgIHR5cGU6IFN0cmluZyxcbiAgICBkZWZhdWx0OiBzaG9ydGlkLmdlbmVyYXRlXG4gIH0sXG4gIHVzZXJJZDp7IHR5cGU6IFN0cmluZywgcmVxdWlyZWQ6IHRydWUgfSxcbiAgZGVzY3JpcHRpb246eyB0eXBlOiBTdHJpbmcsIHJlcXVpcmVkOiB0cnVlIH0sXG4gIGR1cmF0aW9uOnsgdHlwZTogU3RyaW5nLCByZXF1aXJlZDogdHJ1ZSB9LFxuICBkYXRlOiB7IHR5cGU6IERhdGUgfVxufSlcblxuY29uc3QgVXNlck1vZGVsID0gbW9uZ29vc2UubW9kZWwoJ1VzZXInLCB1c2VyU2NoZW1hKVxuY29uc3QgRXhlcmNpc2VNb2RlbCA9IG1vbmdvb3NlLm1vZGVsKFwiRXhlcmNpc2VcIiwgZXhlcmNpc2VTY2hlbWEpXG5cbmNvbnN0IGFkZFVzZXIgPSAodXNlcikgPT4gbmV3IFByb21pc2UoKHJlc29sdmUscmVqZWN0KSA9PiB7XG4gIFxuICBsZXQgbmV3VXNlcj0gbmV3IFVzZXJNb2RlbCh1c2VyKVxuICBcbiAgY29uc29sZS5sb2coXCJzYXZpbmcgdXNlclwiLCBuZXdVc2VyKVxuICBcbiAgbmV3VXNlci5zYXZlKChlcnIsdXNlcik9PntcbiAgICBcbiAgICBpZihlcnIpcmVqZWN0KGVycilcbiAgICBcbiAgICBjb25zb2xlLmxvZygnc2F2ZWQgdXNlcicsIHVzZXIpXG4gICAgY29uc3QgeyBfaWQsIHVzZXJuYW1lIH0gPSB1c2VyXG4gICAgcmVzb2x2ZSh7IF9pZCwgdXNlcm5hbWUgfSlcbiAgICBcbiAgfSlcbiAgXG4gIFxufSlcbmNvbnN0IGZpbmRVc2VyID0gKHF1ZXJ5T2JqKT0+IG5ldyBQcm9taXNlKChyZXNvbHZlLHJlamVjdCkgPT4geyAgXG4gICBVc2VyTW9kZWwuZmluZChxdWVyeU9iaikuZXhlYygoZXJyLHVzZXJuYW1lQXJyKT0+e1xuICAgIFxuICAgIGlmKGVycilyZWplY3QoZXJyKVxuICAgXG4gICAgcmVzb2x2ZSh1c2VybmFtZUFycilcbiAgfSlcbiAgXG5cbn0pXG5jb25zdCBhZGRFeGVyY2lzZT0oZXhlcmNpc2UpID0+IG5ldyBQcm9taXNlKChyZXNvbHZlLHJlamVjdCkgPT4ge1xuICAvLyB1c2VySWQoX2lkKSwgZGVzY3JpcHRpb24sIGR1cmF0aW9uLCBhbmQgb3B0aW9uYWxseSBkYXRlXG4gICBjb25zb2xlLmxvZyhcImV4ZXJjaXNlIGNyZWF0aW5nXCIsZXhlcmNpc2UpXG4gIGxldCBuZXdFeGVyY2lzZT0gbmV3IEV4ZXJjaXNlTW9kZWwoZXhlcmNpc2UpO1xuICAgY29uc29sZS5sb2coXCJleGVyY2lzZSBzYXZpbmdcIixuZXdFeGVyY2lzZSlcbiAgbmV3RXhlcmNpc2Uuc2F2ZSgoZXJyLHJlc3VsdCkgPT57XG4gICAgaWYoZXJyKXJlamVjdChlcnIpXG4gICAgY29uc29sZS5sb2coXCJleGVyY2lzZSBzYXZlZFwiLHJlc3VsdClcbiAgICByZXNvbHZlKHJlc3VsdClcbiAgfSlcbn0pXG5jb25zdCBnZXRFeGVyY2lzZT0oe3VzZXJJZCxmcm9tLHRvLGxpbWl0fSk9Pm5ldyBQcm9taXNlKChyZXNvbHZlLHJlamVjdCkgPT57XG4gXG4gIGNvbnN0IGdldEhhbmRsZXI9IChlcnIsZXhlcmNpc2VBcnIpID0+e1xuICAgIGlmKGVycikgcmVqZWN0KGVycilcbiAgICBjb25zb2xlLmxvZyhcImdldHRlZCBleGVyY2lzZXNcIixleGVyY2lzZUFycilcbiAgICByZXNvbHZlKGV4ZXJjaXNlQXJyKVxuICAgIFxuICAgIFxuICB9ICBcbiAgY29uc3QgX2Zyb209ZnJvbT9mcm9tOm5ldyBEYXRlKFwiMTk3MC0wMS0wMVwiKTtcbiAgY29uc3QgX3RvPXRvP3RvOm5ldyBEYXRlKFwiMjEwMC0wMS0wMVwiKTtcbiAgY29uc3QgX2xpbWl0PWxpbWl0P2xpbWl0OjA7XG4gIEV4ZXJjaXNlTW9kZWwuZmluZCh7dXNlcklkfSkud2hlcmUoJ2RhdGUnKS5ndGUoX2Zyb20pLmx0ZShfdG8pLmxpbWl0KF9saW1pdCkuZXhlYyhnZXRIYW5kbGVyKVxufSlcblxubW9kdWxlLmV4cG9ydHMgPSB7IGFkZFVzZXIsIGZpbmRVc2VyICwgYWRkRXhlcmNpc2UgLCBnZXRFeGVyY2lzZSB9Il19",
+    "ast": null,
+    "map": {
+      "version": 3,
+      "sources": [
+        "db.js"
+      ],
+      "names": [
+        "mongoose",
+        "require",
+        "shortid",
+        "connect",
+        "process",
+        "env",
+        "DBPASSWD",
+        "useNewUrlParser",
+        "useUnifiedTopology",
+        "Schema",
+        "userSchema",
+        "_id",
+        "type",
+        "String",
+        "default",
+        "generate",
+        "username",
+        "unique",
+        "exerciseSchema",
+        "userId",
+        "required",
+        "description",
+        "duration",
+        "date",
+        "Date",
+        "UserModel",
+        "model",
+        "ExerciseModel",
+        "addUser",
+        "user",
+        "Promise",
+        "resolve",
+        "reject",
+        "newUser",
+        "console",
+        "log",
+        "save",
+        "err",
+        "findUser",
+        "queryObj",
+        "find",
+        "exec",
+        "usernameArr",
+        "addExercise",
+        "exercise",
+        "newExercise",
+        "result",
+        "getExercise",
+        "from",
+        "to",
+        "limit",
+        "getHandler",
+        "exerciseArr",
+        "_from",
+        "_to",
+        "_limit",
+        "where",
+        "gte",
+        "lte",
+        "module",
+        "exports"
+      ],
+      "mappings": "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",
+      "file": "db.js",
+      "sourceRoot": "/app",
+      "sourcesContent": [
+        "const mongoose =  require('mongoose');\nconst shortid = require('shortid')\n\nmongoose.connect(`mongodb+srv://fcc-mongo-jainer:${process.env.DBPASSWD}@cluster0-8ebwi.mongodb.net/test?retryWrites=true&w=majority`,{ useNewUrlParser: true, useUnifiedTopology: true })\n\nconst Schema = mongoose.Schema;\n\nconst userSchema = new Schema({\n  _id: {\n  type: String,\n  default: shortid.generate\n},\n  username:{ type: String, unique: true },\n})\n\nconst exerciseSchema= new Schema({\n  // userId(_id), description, duration, and optionally date\n  _id: {\n    type: String,\n    default: shortid.generate\n  },\n  userId:{ type: String, required: true },\n  description:{ type: String, required: true },\n  duration:{ type: String, required: true },\n  date: { type: Date }\n})\n\nconst UserModel = mongoose.model('User', userSchema)\nconst ExerciseModel = mongoose.model(\"Exercise\", exerciseSchema)\n\nconst addUser = (user) => new Promise((resolve,reject) => {\n  \n  let newUser= new UserModel(user)\n  \n  console.log(\"saving user\", newUser)\n  \n  newUser.save((err,user)=>{\n    \n    if(err)reject(err)\n    \n    console.log('saved user', user)\n    const { _id, username } = user\n    resolve({ _id, username })\n    \n  })\n  \n  \n})\nconst findUser = (queryObj)=> new Promise((resolve,reject) => {  \n   UserModel.find(queryObj).exec((err,usernameArr)=>{\n    \n    if(err)reject(err)\n   \n    resolve(usernameArr)\n  })\n  \n\n})\nconst addExercise=(exercise) => new Promise((resolve,reject) => {\n  // userId(_id), description, duration, and optionally date\n   console.log(\"exercise creating\",exercise)\n  let newExercise= new ExerciseModel(exercise);\n   console.log(\"exercise saving\",newExercise)\n  newExercise.save((err,result) =>{\n    if(err)reject(err)\n    console.log(\"exercise saved\",result)\n    resolve(result)\n  })\n})\nconst getExercise=({userId,from,to,limit})=>new Promise((resolve,reject) =>{\n \n  const getHandler= (err,exerciseArr) =>{\n    if(err) reject(err)\n    console.log(\"getted exercises\",exerciseArr)\n    resolve(exerciseArr)\n    \n    \n  }  \n  const _from=from?from:new Date(\"1970-01-01\");\n  const _to=to?to:new Date(\"2100-01-01\");\n  const _limit=limit?limit:0;\n  ExerciseModel.find({userId}).where('date').gte(_from).lte(_to).limit(_limit).exec(getHandler)\n})\n\nmodule.exports = { addUser, findUser , addExercise , getExercise }"
+      ]
+    },
+    "mtime": 1577809838000
+  }
+}
